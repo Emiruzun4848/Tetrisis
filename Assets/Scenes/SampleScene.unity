@@ -216,7 +216,7 @@ MonoBehaviour:
   height: 14
   width: 5
   selectedObject: {fileID: 0}
-  fallTime: 0.4
+  fallTime: 0.8
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
