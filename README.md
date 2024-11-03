@@ -1,7 +1,7 @@
 
 <b>Move Buttons => </br>
-   A Button - Left</br>
-   D Button - Right</b></br></br>
+  &nbsp;&nbsp;&nbsp;&nbsp; A Button - Left</br>
+  &nbsp;&nbsp;&nbsp;&nbsp; D Button - Right</b></br></br>
 
 <b>Rotate Button - W Button</b></br>
 
