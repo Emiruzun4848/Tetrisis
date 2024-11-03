@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,23 +12,41 @@ public class GameManager : MonoBehaviour
     public Transform[,] cells;
     public Transform selectedObject;
     private Transform middleObject;
+    public TMP_Text pointText;
+    public TMP_Text bestPointText;
     public float fallTime;
     private float fallTimeKeeper;
     private bool gameOver;
+    private int point = 0;
+    private int Point
+    {
+        set
+        {
+            point = value;
+            pointText.text = "Point : " + point.ToString();
+        }
+        get
+        {
+            return point;
+        }
+    }
     private void Awake()
     {
         gameOver = false;
         cells = new Transform[height, width];
         fallTimeKeeper = fallTime;
     }
+    private void Start()
+    {
+        if (!PlayerPrefs.HasKey("BestScoreTet"))
+            PlayerPrefs.SetInt("BestScoreTet", 0);
+        bestPointText.text = "Best Point : " + PlayerPrefs.GetInt("BestScoreTet").ToString();
+        Point = 0;
+    }
     private void Update()
     {
         if (gameOver)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                SceneManager.LoadScene(0);
-            }
             return;
         }
         bool canMove;
@@ -70,7 +89,7 @@ public class GameManager : MonoBehaviour
             #region Rotate
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Dictionary<Transform,Vector3> tempDic = new Dictionary<Transform,Vector3>();
+                Dictionary<Transform, Vector3> tempDic = new Dictionary<Transform, Vector3>();
                 bool canRotate = true;
                 foreach (Transform t in selectedObject)
                 {
@@ -167,7 +186,12 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        if (line.Count > 0)
+            Point += (int)Mathf.Pow(4f, (float)line.Count) * 10;
+
+
     }
+
     void CreateTet()
     {
         selectedObject = Instantiate(Tets[GetRandomNumber(Tets.Length)], transform.position, Quaternion.identity).transform;
@@ -221,7 +245,7 @@ public class GameManager : MonoBehaviour
     }
     bool ControlCube(Transform tet, Vector3 vec)
     {
-        if (ControlPosition(tet.position+vec))
+        if (ControlPosition(tet.position + vec))
         {
             return cells[(int)(tet.position.y + vec.y), (int)(tet.position.x + vec.x)] == null;
         }
@@ -229,11 +253,17 @@ public class GameManager : MonoBehaviour
     }
     bool ControlPosition(Vector3 pos)
     {
-        return pos.y>-1 && pos.y < height && pos.x>-1 && pos.x<width;
+        return pos.y > -1 && pos.y < height && pos.x > -1 && pos.x < width;
     }
     void GameOver()
     {
         Debug.Log("GAME OVER");
         gameOver = true;
+        if (Point > PlayerPrefs.GetInt("BestScoreTet"))
+        {
+            PlayerPrefs.SetInt("BestScoreTet", Point);
+            bestPointText.text = "Best Point : " + PlayerPrefs.GetInt("BestScoreTet").ToString();
+        }
     }
+    public void PlayAgain() => SceneManager.LoadScene(0);
 }
